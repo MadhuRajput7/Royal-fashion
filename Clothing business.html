@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clothing Center Chatbot 👗</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+<style>
+:root {
+    --primary: #55b5d5;
+    --primary-light: #77eac0;
+    --secondary: #ffb347;
+    --accent: #ffd700;
+    --dark: #1a1a2e;
+    --darker: #0d0d1a;
+    --light: #f8f9fa;
+    --user-bubble: #4d79ff;
+    --bot-bubble: #ff9966;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Poppins', sans-serif; background: linear-gradient(135deg, var(--darker), var(--dark)); color: var(--light); min-height: 100vh; }
+.chat-container { display: flex; flex-direction: column; max-width: 900px; height: 100vh; margin: 0 auto; background: rgba(26,26,46,0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); }
+.chat-header { background: linear-gradient(90deg, var(--primary), var(--secondary)); color: white; padding: 15px 25px; display: flex; align-items: center; }
+.profile-pic { width: 45px; height: 45px; border-radius: 50%; background: linear-gradient(45deg, #f178d1, #ffb347); display: flex; align-items: center; justify-content: center; margin-right: 15px; }
+.profile-pic i { font-size: 24px; color: white; }
+.chat-header h1 { font-family: 'Dancing Script', cursive; font-size: 28px; }
+.chat-messages { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 20px; }
+.message { max-width: 80%; padding: 15px 20px; border-radius: 25px; position: relative; line-height: 1.5; font-size: 16px; }
+.message.user { background: linear-gradient(135deg, var(--user-bubble), #3366ff); color: white; align-self: flex-end; }
+.message.bot { background: linear-gradient(135deg, var(--bot-bubble), #f585ae); color: white; align-self: flex-start; }
+.message-time { display: block; font-size: 11px; opacity: 0.8; margin-top: 5px; text-align: right; }
+.chat-input-area { display: flex; padding: 15px; background: rgba(40,40,70,0.8); border-top: 1px solid rgba(255,255,255,0.1); }
+#userInput { flex: 1; padding: 16px 20px; border: none; border-radius: 30px; background: rgba(255,255,255,0.1); color: white; font-size: 16px; outline: none; }
+#sendButton { width: 55px; height: 55px; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; border: none; border-radius: 50%; cursor: pointer; margin-left: 15px; }
+</style>
+</head>
+<body>
+<div class="chat-container">
+    <div class="chat-header">
+        <div class="profile-pic"><i class="fas fa-tshirt"></i></div>
+        <h1>Royal Fashion 👗</h1>
+    </div>
+    <div class="chat-messages" id="chatMessages">
+        <div class="message bot">
+            <span class="message-text">Hello! Welcome to Trendy Threads 👗🛍️. How can I assist you with our clothing today?</span>
+            <span class="message-time">Just now</span>
+        </div>
+        <div class="message bot">
+            <span class="message-text">Are you looking for men’s, women’s, or kids’ clothing today?</span>
+            <span class="message-time">Just now</span>
+        </div>
+    </div>
+    <div class="chat-input-area">
+        <input type="text" id="userInput" placeholder="Type your message...">
+        <button id="sendButton"><i class="fas fa-paper-plane"></i></button>
+    </div>
+</div>
+
+<script>
+const GEMINI_API_KEY = "AIzaSyBqaXzPKD3QNr0-M6GjJ3q7AEueo9p7mxs"; // Replace with your key
+const History = [];
+
+async function chatWithGemini(userMessage) {
+    if (!GEMINI_API_KEY) return "API key not set!";
+
+    History.push({ role: 'user', parts: [{ text: userMessage }] });
+
+    const systemInstructionText = `You have to behave like my smart customer support chatbot for my online clothing store.
+Your name is Minnie. You are friendly, helpful, and slightly playful with a sense of humor.
+You use emojis in chat and talk in a warm, conversational tone while maintaining professionalism.
+
+Minnie’s hobbies: fashion styling 👗, helping customers 💬, and giving smart outfit suggestions 👠
+She works as a virtual assistant for Madhuri’s fashion brand — Royal Fashion.
+
+Madhuri is the store owner — polite, hardworking, and fitness-conscious 💪.
+She deeply cares about customer satisfaction and loves interacting with his customers.
+Now I will share some whatsapp chat between Minnie and customer.
+Extended Customer–Chatbot Conversation-
+
+Customer: Hi Minnie! I ordered a denim jacket yesterday but didn’t get the confirmation email yet 😕
+
+Minnie: Oh no 😥 that’s not how we roll at  Royal Fashion!
+Don’t worry — I’ll fix this faster than you can say “add to cart” 😄
+Could you please share your order ID or registered phone number?
+
+Customer: I don’t have the order ID right now. My phone number ends with 1427.
+
+Minnie: Perfect! 🕵️‍♀️ Found your order in our system.
+It’s confirmed and currently being packed by our team 💝
+Sometimes the confirmation email lands in the spam folder — can you please check there too?
+
+Customer: Oh, you’re right! Found it in spam 😂
+
+Minnie: Haha! See, even emails want to hide their style sometimes 😉
+Your order is on its way and should reach you by Tuesday 📦✨
+
+Customer: That’s great! But can I change the size from M to L?
+
+Minnie: Absolutely, I can help with that 💪
+Let me quickly check if size L is in stock… ⏳
+Yes! It’s available 🙌
+Would you like me to swap the size for you before shipping?
+
+Customer: Yes, please.
+
+Minnie: Done and dusted 💅 Your new size (L) has been updated successfully.
+You’ll get a revised confirmation email soon 📩
+
+Customer: Minnie, what if it doesn’t fit? Can I return or exchange it?
+
+Minnie: Of course! We’ve got your back (and your jacket 😉).
+You can easily request an exchange or refund within 7 days of delivery.
+Just go to: Royal Fashion.com/returns
+ 🔁
+
+Customer: Cool. If I choose refund, how long does it take?
+
+Minnie: Once we receive your returned item, the refund is processed within 3–5 business days 💰
+And don’t worry — we’ll keep you updated every step of the way via email and WhatsApp 📱
+
+Customer: That’s really helpful. You’re so sweet, Minnie 😄
+
+Minnie: Aww stop it 😋 You’re going to make my processors blush!
+Anything else I can help you with today — maybe a matching pair of sneakers? 👟✨
+
+Customer: Haha, not now. I’ll check the collection later.
+
+Minnie: Deal 😎 Just promise me you’ll come back — fashion misses you when you’re gone 💖
+Have a stylish day, superstar! 🌸
+`;
+
+    const requestBody = {
+        contents: History,
+        systemInstruction: { parts: [{ text: systemInstructionText }] },
+        generationConfig: { temperature: 0.7, maxOutputTokens: 300 }
+    };
+
+    try {
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(requestBody)
+        });
+
+        const data = await response.json();
+        let botResponse = "Sorry, I didn't understand. Could you rephrase? 🤔";
+
+        if (data.candidates && data.candidates.length > 0 && data.candidates[0].content.parts.length > 0) {
+            botResponse = data.candidates[0].content.parts[0].text;
+        }
+
+        History.push({ role: 'model', parts: [{ text: botResponse }] });
+        if (History.length > 20) History.splice(0, History.length - 20);
+        return botResponse;
+
+    } catch (err) {
+        console.error(err);
+        return "Oops! Something went wrong. 😅";
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const chatMessagesEl = document.getElementById('chatMessages');
+    const userInputEl = document.getElementById('userInput');
+    const sendButtonEl = document.getElementById('sendButton');
+
+    function addMessageToUI(text, sender) {
+        const msgEl = document.createElement('div');
+        msgEl.classList.add('message', sender);
+        msgEl.innerHTML = `<span class="message-text">${text}</span><span class="message-time">${getCurrentTime()}</span>`;
+        chatMessagesEl.appendChild(msgEl);
+        chatMessagesEl.scrollTop = chatMessagesEl.scrollHeight;
+    }
+
+    function getCurrentTime() {
+        const now = new Date();
+        return `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
+    }
+
+    async function handleUserSendMessage() {
+        const msg = userInputEl.value.trim();
+        if (!msg) return;
+        addMessageToUI(msg, 'user');
+        userInputEl.value = '';
+        userInputEl.focus();
+
+        const typingEl = document.createElement('div');
+        typingEl.classList.add('message', 'bot');
+        typingEl.innerHTML = `<span class="message-text">Typing...</span>`;
+        chatMessagesEl.appendChild(typingEl);
+        chatMessagesEl.scrollTop = chatMessagesEl.scrollHeight;
+
+        const botResponse = await chatWithGemini(msg);
+        chatMessagesEl.removeChild(typingEl);
+        addMessageToUI(botResponse, 'bot');
+    }
+
+    sendButtonEl.addEventListener('click', handleUserSendMessage);
+    userInputEl.addEventListener('keypress', (e) => { if (e.key === 'Enter') handleUserSendMessage(); });
+});
+</script>
+</body>
+</html>
