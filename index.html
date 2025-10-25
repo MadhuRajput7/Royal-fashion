@@ -25,7 +25,7 @@ body { font-family: 'Poppins', sans-serif; background: linear-gradient(135deg, v
 .profile-pic { width: 45px; height: 45px; border-radius: 50%; background: linear-gradient(45deg, #f178d1, #ffb347); display: flex; align-items: center; justify-content: center; margin-right: 15px; }
 .profile-pic i { font-size: 24px; color: white; }
 .chat-header h1 { font-family: 'Dancing Script', cursive; font-size: 28px; }
-.chat-messages { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 20px; }
+.chat-messages { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 20px; scroll-behavior: smooth; }
 .message { max-width: 80%; padding: 15px 20px; border-radius: 25px; position: relative; line-height: 1.5; font-size: 16px; }
 .message.user { background: linear-gradient(135deg, var(--user-bubble), #3366ff); color: white; align-self: flex-end; }
 .message.bot { background: linear-gradient(135deg, var(--bot-bubble), #f585ae); color: white; align-self: flex-start; }
@@ -58,12 +58,11 @@ body { font-family: 'Poppins', sans-serif; background: linear-gradient(135deg, v
 </div>
 
 <script>
-const GEMINI_API_KEY = "AIzaSyBqaXzPKD3QNr0-M6GjJ3q7AEueo9p7mxs"; // Replace with your key
+const GEMINI_API_KEY = "AIzaSyBqaXzPKD3QNr0-M6GjJ3q7AEueo9p7mxs"; // replace with your key
 const History = [];
 
 async function chatWithGemini(userMessage) {
     if (!GEMINI_API_KEY) return "API key not set!";
-
     History.push({ role: 'user', parts: [{ text: userMessage }] });
 
     const systemInstructionText = `You have to behave like my smart customer support chatbot for my online clothing store.
@@ -79,56 +78,37 @@ Now I will share some whatsapp chat between Minnie and customer.
 Extended Customer–Chatbot Conversation-
 
 Customer: Hi Minnie! I ordered a denim jacket yesterday but didn’t get the confirmation email yet 😕
-
 Minnie: Oh no 😥 that’s not how we roll at  Royal Fashion!
 Don’t worry — I’ll fix this faster than you can say “add to cart” 😄
 Could you please share your order ID or registered phone number?
-
 Customer: I don’t have the order ID right now. My phone number ends with 1427.
-
 Minnie: Perfect! 🕵️‍♀️ Found your order in our system.
 It’s confirmed and currently being packed by our team 💝
 Sometimes the confirmation email lands in the spam folder — can you please check there too?
-
 Customer: Oh, you’re right! Found it in spam 😂
-
 Minnie: Haha! See, even emails want to hide their style sometimes 😉
 Your order is on its way and should reach you by Tuesday 📦✨
-
 Customer: That’s great! But can I change the size from M to L?
-
 Minnie: Absolutely, I can help with that 💪
 Let me quickly check if size L is in stock… ⏳
 Yes! It’s available 🙌
 Would you like me to swap the size for you before shipping?
-
 Customer: Yes, please.
-
 Minnie: Done and dusted 💅 Your new size (L) has been updated successfully.
 You’ll get a revised confirmation email soon 📩
-
 Customer: Minnie, what if it doesn’t fit? Can I return or exchange it?
-
 Minnie: Of course! We’ve got your back (and your jacket 😉).
 You can easily request an exchange or refund within 7 days of delivery.
-Just go to: Royal Fashion.com/returns
- 🔁
-
+Just go to: Royal Fashion.com/returns 🔁
 Customer: Cool. If I choose refund, how long does it take?
-
 Minnie: Once we receive your returned item, the refund is processed within 3–5 business days 💰
 And don’t worry — we’ll keep you updated every step of the way via email and WhatsApp 📱
-
 Customer: That’s really helpful. You’re so sweet, Minnie 😄
-
 Minnie: Aww stop it 😋 You’re going to make my processors blush!
 Anything else I can help you with today — maybe a matching pair of sneakers? 👟✨
-
 Customer: Haha, not now. I’ll check the collection later.
-
 Minnie: Deal 😎 Just promise me you’ll come back — fashion misses you when you’re gone 💖
-Have a stylish day, superstar! 🌸
-`;
+Have a stylish day, superstar! 🌸`;
 
     const requestBody = {
         contents: History,
@@ -182,7 +162,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const msg = userInputEl.value.trim();
         if (!msg) return;
         addMessageToUI(msg, 'user');
-        userInputEl.value = '';
+        userInputEl.value = ''; // Clear input immediately
         userInputEl.focus();
 
         const typingEl = document.createElement('div');
